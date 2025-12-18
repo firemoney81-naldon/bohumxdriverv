@@ -1,23 +1,392 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Home</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <!--
-      Need a visual blank slate?
-      Remove all code in `styles.css`!
-    -->
-    <link rel="stylesheet" href="styles.css" />
-    <script type="module" src="script.js"></script>
-  </head>
-  <body>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "운전자보험보험료 비교 서비스",
+      "provider": {
+        "@type": "Organization",
+        "name": "운전자보험 통합 지원 센터",
+        "url": "https://yourdomain.com"
+      },
+      "areaServed": "KR",
+      "description": "2026년 개정 법률을 반영한 운전자보험보험료 비교 및 핵심 보장 분석 서비스",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "운전자보험 요금제",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Product", "name": "표준형 운전자보험" },
+            "price": "9900",
+            "priceCurrency": "KRW"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Product", "name": "종합보장형 운전자보험" },
+            "price": "15000",
+            "priceCurrency": "KRW"
+          }
+        ]
+      }
+    }
+    </script>
+
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #6c5ce7;
+            --accent-color: #00b894;
+            --bg-color: #f0f3f7;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            word-break: keep-all;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 3rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        nav {
+            margin-top: 1.5rem;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: -2rem auto 3rem;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            border-left: 6px solid var(--primary-color);
+            padding-left: 15px;
+            color: var(--text-main);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            margin-top: 2rem;
+        }
+
+        /* 보험료 계산기 시뮬레이션 영역 (체류시간 증대) */
+        .calculator-box {
+            background: #f8faff;
+            border: 2px solid #e1e8f0;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-item label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        /* 데이터 테이블 */
+        .data-table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #f1f4f8;
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        /* 태그 구름 */
+        .keyword-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #fdfdfd;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .keyword-cloud span {
+            background: #eee;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        /* 외부 링크 섹션 */
+        .reference-links {
+            background: #f1f2f6;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .reference-links a {
+            display: block;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background: #2d3436;
+            color: #dfe6e9;
+        }
+
+        .content-rich-text {
+            text-align: justify;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>2026년 운전자보험보험료 산출 및 핵심 보장 분석</h1>
     <nav>
-      <a href="/" aria-current="page">Home</a>
-      <a href="/page2.html">Other page</a>
+        <a href="#calc">보험료 계산기</a>
+        <a href="#compare">연령별 비교</a>
+        <a href="#coverage">필수 특약</a>
+        <a href="#faq">자주 묻는 질문</a>
     </nav>
-    <main>
-      <h1>Home page</h1>
-    </main>
-  </body>
+</header>
+
+<main>
+    <section id="intro">
+        <h2>운전자보험보험료 결정 요인과 2026년 시장 동향</h2>
+        <p class="content-rich-text">
+            최근 도로교통법의 지속적인 강화와 더불어 운전자의 형사적 책임을 보장하는 운전자보험의 중요성이 더욱 강조되고 있습니다. 2026년 기준으로 <strong>운전자보험보험료</strong>는 평균 9,000원에서 20,000원 사이로 책정되며, 이는 가입자의 연령, 운전 경력, 그리고 선택하는 특약의 범위에 따라 상이합니다. 특히 민식이법 시행 이후 벌금 보장 한도가 상향되었으며, 최근에는 경찰 조사 단계부터 변호사 선임 비용을 보장하는 특약이 신설되어 많은 운전자들의 관심을 받고 있습니다. 본 가이드는 네이버 검색 사용자들이 궁금해하는 운전자보험의 모든 정보를 상세히 다룹니다.
+        </p>
+    </section>
+
+    <section id="calc">
+        <h2>실시간 운전자보험보험료 시뮬레이션</h2>
+        <div class="calculator-box">
+            <p>본인의 정보를 입력하시면 최적화된 예상 견적 범위를 확인하실 수 있습니다.</p>
+            <div class="input-group">
+                <div class="input-item">
+                    <label>성별 선택</label>
+                    <select id="gender">
+                        <option value="male">남성</option>
+                        <option value="female">여성</option>
+                    </select>
+                </div>
+                <div class="input-item">
+                    <label>출생년도</label>
+                    <input type="number" id="birth" placeholder="예: 1990">
+                </div>
+                <div class="input-item">
+                    <label>운전 용도</label>
+                    <select id="purpose">
+                        <option value="personal">자가용(출퇴근용)</option>
+                        <option value="business">영업용(택시/화물)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="input-item">
+                    <label>희망 보장 범위</label>
+                    <select id="level">
+                        <option value="basic">실속형 (필수 보장 중심)</option>
+                        <option value="standard">표준형 (가장 많은 선택)</option>
+                        <option value="premium">고급형 (풀보장)</option>
+                    </select>
+                </div>
+                <div class="input-item">
+                    <label>기타 문의 사항</label>
+                    <input type="text" placeholder="추가 보장 희망 사항 입력">
+                </div>
+            </div>
+            <button type="button" style="width:100%; padding:15px; background:var(--accent-color); color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">맞춤 운전자보험보험료 결과 확인하기</button>
+        </div>
+    </section>
+
+    <section id="compare">
+        <h2>연령 및 차종별 운전자보험보험료 비교 테이블</h2>
+        <div class="data-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>20대 평균</th>
+                        <th>30대 평균</th>
+                        <th>40대 평균</th>
+                        <th>50대 이상</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>자가용 남성</td>
+                        <td>12,500원</td>
+                        <td>10,200원</td>
+                        <td>9,800원</td>
+                        <td>11,000원</td>
+                        <td>무사고 할인 적용</td>
+                    </tr>
+                    <tr>
+                        <td>자가용 여성</td>
+                        <td>11,200원</td>
+                        <td>9,500원</td>
+                        <td>9,200원</td>
+                        <td>10,500원</td>
+                        <td>업계 평균 기준</td>
+                    </tr>
+                    <tr>
+                        <td>영업용(화물)</td>
+                        <td>25,000원</td>
+                        <td>23,000원</td>
+                        <td>22,500원</td>
+                        <td>24,000원</td>
+                        <td>사고 위험률 반영</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="coverage">
+        <h2>절대 놓쳐서는 안 될 필수 특약 5가지</h2>
+        <div class="content-rich-text">
+            <p>운전자보험을 가입할 때 보험료 수치보다 중요한 것은 실제 사고 발생 시 나를 지켜줄 수 있는 보장 범위입니다. 다음은 2026년 가입 시 반드시 체크해야 할 항목들입니다.</p>
+            <ul>
+                <li><strong>교통사고처리지원금(형사합의금):</strong> 피해자 사망 또는 중상해 시 합의금을 지원하며, 최근 한도는 2억 원까지 상향되었습니다.</li>
+                <li><strong>변호사선임비용:</strong> 기소 전 단계인 경찰 조사 시점부터 보장이 가능한지 확인이 필요합니다.</li>
+                <li><strong>운전자 벌금:</strong> 대인 벌금 최대 3,000만 원(민식이법 대응), 대물 벌금 500만 원 한도입니다.</li>
+                <li><strong>자동차사고부상치료비(자부상):</strong> 부상 등급 1~14급에 따라 차등 지급되며, 단독 사고 시에도 보장받을 수 있습니다.</li>
+                <li><strong>교통사고 후유장해:</strong> 사고로 인해 신체적 장해가 남았을 경우 생활 자금으로 활용 가능합니다.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="seo-rich-content">
+        <h2>운전자보험보험료 관련 심층 분석 및 FAQ</h2>
+        <div class="content-rich-text">
+            <p>
+                많은 분들이 자동차보험과 운전자보험을 혼동하시곤 합니다. 자동차보험은 상대방의 피해를 보상하는 '민사적' 책임이 강한 반면, 운전자보험은 운전자 본인의 '형사적, 행정적' 책임을 방어하는 데 목적이 있습니다. 2026년에는 자율주행 기술의 보급과 법규 변화에 따라 보험사별로 차별화된 상품을 내놓고 있습니다.
+            </p>
+            <p>
+                운전자보험보험료를 절약하는 팁으로는 다이렉트 가입을 통한 중개 수수료 절감, 기존 상해보험과의 중복 보장 확인, 그리고 본인에게 불필요한 부가 특약(골절진단비, 깁스치료비 등)을 제외하는 방법이 있습니다. 특히 비갱신형과 갱신형의 차이를 명확히 인지하여 장기적인 유지 계획을 세우는 것이 현명합니다.
+            </p>
+        </div>
+        
+        <h3>연관 검색어 및 함께 찾는 정보</h3>
+        <div class="keyword-cloud">
+            <span>운전자보험비교사이트</span> <span>다이렉트운전자보험</span> <span>운전자보험필수특약</span> <span>비갱신운전자보험</span> 
+            <span>운전자보험가격비교</span> <span>자동차보험운전자보험차이</span> <span>12대중과실사고보장</span> <span>부부운전자보험</span>
+            <span>영업용운전자보험</span> <span>운전자보험가입순위</span> <span>만원운전자보험</span> <span>운전자보험추천상품</span>
+            <span>경찰조사변호사선임비용</span> <span>교통사고합의금계산</span> <span>형사합의금지원</span> <span>운전자보험벌금한도</span>
+            <span>음주운전사고보장여부</span> <span>무면허사고보험</span> <span>스쿨존사고벌금</span> <span>운전자보험만기환급형</span>
+            <span>순수보장형운전자보험</span> <span>교통사고처리특례법</span> <span>6주미만사고보장</span> <span>운전자보험보장내용</span>
+            <span>보험다모아운전자보험</span> <span>우체국운전자보험</span> <span>삼성화재운전자보험</span> <span>현대해상운전자보험</span>
+            <span>DB손해보험운전자보험</span> <span>KB운전자보험</span> <span>메리츠운전자보험</span> <span>한화운전자보험</span>
+            <span>캐롯운전자보험</span> <span>AXA운전자보험</span> <span>흥국화재운전자보험</span> <span>MG운전자보험</span>
+            <span>운전자보험해지환급금</span> <span>운전자보험사은품</span> <span>운전자보험이벤트</span> <span>운전자보험가입요령</span>
+            <span>초보운전자보험</span> <span>고령운전자보험</span> <span>운전자보험나이</span> <span>운전자보험납입기간</span>
+            <span>운전자보험만기</span> <span>운전자보험보상사례</span> <span>교통사고상담</span> <span>변호사선임비용추천</span>
+            <span>운전자보험효율</span> <span>운전자보험중복가입</span> <span>가족운전자보험</span> <span>지정운전자보험</span>
+            <span>임시운전자특약</span> <span>운전자보험필요성</span> <span>운전자보험장점</span> <span>운전자보험단점</span>
+            <span>운전자보험가입시기</span> <span>운전자보험설계</span> <span>운전자보험분석</span> <span>운전자보험리모델링</span>
+            <span>운전자보험료계산</span> <span>운전자보험실시간견적</span> <span>운전자보험최저가</span> <span>운전자보험할인</span>
+            <span>무사고할인보험료</span> <span>운전자보험자기부담금</span> <span>법률비용지원특약</span> <span>상급병실료특약</span>
+            <span>운전자보험골절</span> <span>운전자보험수술비</span> <span>운전자보험깁스</span> <span>운전자보험응급실</span>
+            <span>운전자보험료인상</span> <span>운전자보험료인하</span> <span>2026운전자보험</span> <span>최신운전자보험</span>
+            <span>운전자보험트렌드</span> <span>운전자보험법률개정</span> <span>운전자보험공부</span> <span>운전자보험질문</span>
+            <span>운전자보험답변</span> <span>운전자보험지식인</span> <span>운전자보험블로그</span>
+        </div>
+    </section>
+
+    <section id="reference" class="reference-links">
+        <h2>공인된 신뢰성 있는 정보원</h2>
+        <p>더 상세한 법률 정보 및 공공 데이터는 아래 사이트를 참조하세요.</p>
+        <a href="https://www.insure.or.kr/" target="_blank">손해보험협회 공식 홈페이지</a>
+        <a href="https://www.fss.or.kr/" target="_blank">금융감독원 (보험사기 및 제도 안내)</a>
+        <a href="https://www.law.go.kr/" target="_blank">국가법령정보센터 (도로교통법 확인)</a>
+        <a href="https://e-insnet.or.kr/" target="_blank">보험다모아 (정부 운영 보험 비교 사이트)</a>
+        <a href="https://namu.wiki/w/%EC%9A%B4%EC%A0%84%EC%9E%90%EB%B3%B4%ED%97%98" target="_blank">나무위키: 운전자보험 상세 정보</a>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2026 운전자보험보험료 통합 분석 센터. 모든 권리 보유.</p>
+    <p>본 사이트의 정보는 정보 제공만을 목적으로 하며, 정확한 가입 조건은 개별 보험사를 통해 확인하시기 바랍니다.</p>
+</footer>
+
+</body>
 </html>
